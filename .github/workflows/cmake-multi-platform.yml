@@ -50,6 +50,7 @@ jobs:
     - name: Configure CMake
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_STANDARD=17
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
@@ -60,7 +61,13 @@ jobs:
 
     - name: Run executable (generate results.csv)
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: ./performance_test --iterations 500 --trials 30
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == "Windows" ]]; then
+          ./performance_test.exe --iterations 500 --trials 30
+        else
+          ./performance_test --iterations 500 --trials 30
+        fi
 
     - name: Check that CSV was created
       run: test -f build/results.csv
@@ -71,10 +78,10 @@ jobs:
     - name: Run Python visualization
       run: python plot_results.py
 
-    - name: Upload CSV and plot artifacts
+    - name: Upload results (OS=${{ matrix.os }}, Compiler=${{ matrix.c_compiler }})
       uses: actions/upload-artifact@v4
       with:
-        name: results-and-plot
+        name: results-and-plot-${{ matrix.os }}-${{ matrix.c_compiler }}
         path: |
           build/results.csv
           timing_comparison_plot.png
