@@ -61,23 +61,31 @@ jobs:
 
     - name: Run executable (generate results.csv)
       shell: bash
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: |
-        executable_name="performance_test"
-        
-        if [[ "${{ runner.os }}" == "Windows" ]]; then
-          executable_name="Release/performance_test.exe"
-        else
-          executable_name="./performance_test"
-        fi
+        set -e  # Fail fast if any command fails
     
-        if [[ -f "$executable_name" ]]; then
-          echo "Executable found: $executable_name"
-          $executable_name --iterations 500 --trials 30
+        cd build
+    
+        if [[ "${{ runner.os }}" == "Windows" ]]; then
+          if [[ -f "Release/performance_test.exe" ]]; then
+            echo "Running on Windows..."
+            Release/performance_test.exe --iterations 500 --trials 30
+          else
+            echo "Error: Windows .exe not found at Release/performance_test.exe"
+            ls -R
+            exit 1
+          fi
         else
-          echo "Error: Executable not found at $executable_name"
-          exit 1
+          if [[ -f "./performance_test" ]]; then
+            echo "Running on Linux/macOS..."
+            ./performance_test --iterations 500 --trials 30
+          else
+            echo "Error: Linux/macOS binary not found at ./performance_test"
+            ls -R
+            exit 1
+          fi
         fi
+
 
 
     - name: Check that CSV was created
