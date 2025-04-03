@@ -33,7 +33,6 @@ This project compares the execution time of volatile and optimized operations in
 To compile the C++ code, use a C++11 compatible compiler:
 
 ```bash
-g++ -o performance_test main.cpp -std=c++11
 ```
 
 #### 2. Run the C++ Program

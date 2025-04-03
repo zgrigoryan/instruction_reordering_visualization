@@ -76,12 +76,19 @@ int main(int argc, char* argv[]) {
     csv.close();
 
     std::stringstream ss;
-    ss << "| " << std::left << std::setw(35) << "Volatile operations avg (ns)" << " | " << avg_vol << " |\n";
-    ss << "| " << std::left << std::setw(35) << "Optimized operations avg (ns)" << " | " << avg_opt << " |\n";
-    ss << "| " << std::left << std::setw(35) << "Speedup (volatile / optimized)" << " | " 
-       << std::fixed << std::setprecision(2) << static_cast<double>(avg_vol) / avg_opt << "x |\n";
+    ss << std::fixed << std::setprecision(2);  
+
+    ss << "| " << std::left << std::setw(35) << "Volatile operations avg (ns)"
+    << " | " << std::right << std::setw(12) << avg_vol << " |\n";
+
+    ss << "| " << std::left << std::setw(35) << "Optimized operations avg (ns)"
+    << " | " << std::right << std::setw(12) << avg_opt << " |\n";
+
+    ss << "| " << std::left << std::setw(35) << "Speedup (volatile / optimized)"
+    << " | " << std::right << std::setw(12) << static_cast<double>(avg_vol) / avg_opt << "x |\n";
 
     zen::print(ss.str());
+
 
     if (verbose) {
         std::cout << "\nTrial Results:\n";
