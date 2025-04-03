@@ -12,14 +12,25 @@ void test_volatile_operations(int iterations) {
     volatile int a = 1, b = 2, c = 3, d = 4, e = 5;
     for (int i = 0; i < iterations; ++i) {
         a += 1;
-        std::this_thread::sleep_for(std::chrono::nanoseconds(10));
-        b += 2;
-        std::this_thread::sleep_for(std::chrono::nanoseconds(10));
-        c += 3;
-        std::this_thread::sleep_for(std::chrono::nanoseconds(10));
-        d += 4;
-        std::this_thread::sleep_for(std::chrono::nanoseconds(10));
-        e += 5;
+        b = a + 1;
+        // c = b + 1;
+        // d = c + 1;
+        // e = d + 1;
+        // b += 2;
+        // c += 3;
+        // d += 4;
+        // a = b + (c%d)*e;
+        // e += 5;
+        // d = (a+b)%c;
+        // a = (b+c)%d;
+        // b = (c+d)%e;
+        // c = (d+e)%a;
+        // d = (e+a)%b;
+        // e = (a+b)%c;
+        // a = (b+c)%d;
+        // b = (c+d)%e;    
+        // a++;
+        // b++; 
     }
 }
 
@@ -27,7 +38,7 @@ void test_volatile_operations(int iterations) {
 void test_optimized_operations(int iterations) {
     int a = 1, b = 2, c = 3, d = 4, e = 5;
     for (int i = 0; i < iterations; ++i) {
-        a += 1;
+        a += 1; 
         b += 2;
         c += 3;
         d += 4;
@@ -35,7 +46,7 @@ void test_optimized_operations(int iterations) {
     }
 }
 
-// ------------------------ TIMING TEMPLATE ----------------------------------
+// ------------------------ TIMING  TEMPLATE ----------------------------------
 template <typename F>
 std::vector<long long> time_function(F func, int iterations, int trials) {
     std::vector<long long> times;
@@ -85,7 +96,7 @@ int main(int argc, char* argv[]) {
     << " | " << std::right << std::setw(12) << avg_opt << " |\n";
 
     ss << "| " << std::left << std::setw(35) << "Speedup (volatile / optimized)"
-    << " | " << std::right << std::setw(12) << static_cast<double>(avg_vol) / avg_opt << "x |\n";
+    << " | " << std::right << std::setw(12) << static_cast<double>(avg_vol) / avg_opt << " |\n";
 
     zen::print(ss.str());
 
